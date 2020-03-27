@@ -1694,39 +1694,24 @@ function Animation(opts) {
 
     var delay = 17;
 
-    // var createAnimationFrame = function createAnimationFrame() {
-    //     if (typeof requestAnimationFrame !== 'undefined') {
-    //         return requestAnimationFrame;
-    //     } else if (typeof setTimeout !== 'undefined') {
-    //         return function (step, delay) {
-    //             setTimeout(function () {
-    //                 var timeStamp = +new Date();
-    //                 step(timeStamp);
-    //             }, delay);
-    //         };
-    //     } else {
-    //         return function (step) {
-    //             step(null);
-    //         };
-    //     }
-    // };
-    /* fix: 钉钉小程序渲染未出现BUG */
-    function createAnimationFrame() {
+    // fix: 钉钉渲染图表未出现
+    var createAnimationFrame = function createAnimationFrame() {
         if (typeof setTimeout !== 'undefined') {
-        return function(step, delay) {
-            setTimeout(function() {
-            var timeStamp = +new Date();
-            step(timeStamp);
-            }, delay);
-        };
+            return function (step, delay) {
+                setTimeout(function () {
+                    var timeStamp = +new Date();
+                    step(timeStamp);
+                }, delay);
+            };
         } else if (typeof requestAnimationFrame !== 'undefined') {
-        return requestAnimationFrame;
+            return requestAnimationFrame;
         } else {
-        return function(step) {
-            step(null);
-        };
+            return function (step) {
+                step(null);
+            };
         }
     };
+
     var animationFrame = createAnimationFrame();
     var startTimeStamp = null;
     var _step = function step(timestamp) {

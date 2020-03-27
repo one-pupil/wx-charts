@@ -7,22 +7,39 @@ export default function Animation (opts) {
     
     let delay = 17;
 
-    let createAnimationFrame = function () {
-        if (typeof requestAnimationFrame !== 'undefined') {
-            return requestAnimationFrame;
-        } else if (typeof setTimeout !== 'undefined') {
-            return function (step, delay) {
-                setTimeout(function () {
-                    let timeStamp = +new Date();
-                    step(timeStamp);
-                }, delay);
-            }
+    // let createAnimationFrame = function () {
+    //     if (typeof requestAnimationFrame !== 'undefined') {
+    //         return requestAnimationFrame;
+    //     } else if (typeof setTimeout !== 'undefined') {
+    //         return function (step, delay) {
+    //             setTimeout(function () {
+    //                 let timeStamp = +new Date();
+    //                 step(timeStamp);
+    //             }, delay);
+    //         }
+    //     } else {
+    //         return function (step) {
+    //             step(null);
+    //         }
+    //     }
+    // }
+    /* fix: 钉钉小程序渲染未出现BUG */
+    function createAnimationFrame() {
+        if (typeof setTimeout !== 'undefined') {
+        return function(step, delay) {
+            setTimeout(function() {
+            var timeStamp = +new Date();
+            step(timeStamp);
+            }, delay);
+        };
+        } else if (typeof requestAnimationFrame !== 'undefined') {
+        return requestAnimationFrame;
         } else {
-            return function (step) {
-                step(null);
-            }
+        return function(step) {
+            step(null);
+        };
         }
-    }
+    };
     let animationFrame = createAnimationFrame();
     let startTimeStamp = null;
     let step = function (timestamp) {
